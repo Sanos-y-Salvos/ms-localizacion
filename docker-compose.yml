@@ -1,0 +1,50 @@
+services:
+  ms-localizacion:
+    build: .
+    container_name: ms-localizacion
+    restart: unless-stopped
+    ports:
+      - '8000:8000'
+    environment:
+      DB_HOST: postgres-localizacion
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: ms_localizacion
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      RABBITMQ_EXCHANGE: sanos_y_salvos_events
+      CORS_ORIGIN: '*'
+    depends_on:
+      postgres-localizacion:
+        condition: service_healthy
+    networks:
+      - sanos-y-salvos-net
+
+  postgres-localizacion:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: postgres-localizacion
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ms_localizacion
+    ports:
+      - '5434:5432'
+    volumes:
+      - pg_localizacion_data:/var/lib/postgresql/data
+      - ./migrations/001_create_localizaciones.sql:/docker-entrypoint-initdb.d/001_init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sanos-y-salvos-net
+
+volumes:
+  pg_localizacion_data:
+
+networks:
+  sanos-y-salvos-net:
+    external: true
+    name: ms-mascotas_sanos-y-salvos-net
