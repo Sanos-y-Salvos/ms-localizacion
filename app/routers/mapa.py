@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.config.database import get_db
+from app.models.localizacion import Localizacion
 from app.services.localizacion_service import LocalizacionService
 
 router = APIRouter(prefix="/mapa", tags=["mapa"])
@@ -36,3 +37,9 @@ def obtener_puntos(
     """
     service = LocalizacionService(db)
     return service.buscar_en_radio(latitud=lat, longitud=lng, radio_metros=radio)
+
+
+@router.get("/puntos/todos", response_model=list[PuntoMapa])
+def obtener_todos_los_puntos(db: Session = Depends(get_db)):
+    """Solo para testing — retorna todos los registros activos sin filtro de radio."""
+    return db.query(Localizacion).filter(Localizacion.activo == True).all()

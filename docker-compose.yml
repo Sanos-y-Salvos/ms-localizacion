@@ -4,7 +4,7 @@ services:
     container_name: ms-localizacion
     restart: unless-stopped
     ports:
-      - '8000:8000'
+      - '3004:3004'
     environment:
       DB_HOST: postgres-localizacion
       DB_PORT: 5432
@@ -47,4 +47,4 @@ volumes:
 networks:
   sanos-y-salvos-net:
     external: true
-    name: ms-mascotas_sanos-y-salvos-net
+    name: sanos-y-salvos-net
