@@ -1,7 +1,9 @@
-from geoalchemy2.functions import ST_SetSRID, ST_MakePoint
+from geoalchemy2.functions import ST_SetSRID, ST_MakePoint, ST_DWithin
 from sqlalchemy.orm import Session
 
 from app.models.localizacion import Localizacion
+
+LIMITE_MARCADORES = 300
 
 
 class LocalizacionRepository:
@@ -43,6 +45,28 @@ class LocalizacionRepository:
             .first()
         )
 
+    def buscar_en_radio(
+        self,
+        latitud: float,
+        longitud: float,
+        radio_metros: float,
+    ) -> list[Localizacion]:
+        """
+        Retorna hasta 300 puntos EN_BUSQUEDA dentro del radio dado.
+        Usa ST_DWithin de PostGIS con índice GIST — criterio issue #28.
+        """
+        punto = ST_SetSRID(ST_MakePoint(longitud, latitud), 4326)
+        return (
+            self.db.query(Localizacion)
+            .filter(
+                Localizacion.activo == True,
+                Localizacion.estado_reporte == "EN_BUSQUEDA",
+                ST_DWithin(Localizacion.ubicacion, punto, radio_metros),
+            )
+            .limit(LIMITE_MARCADORES)
+            .all()
+        )
+
     def actualizar_coordenadas(
         self,
         loc: Localizacion,
@@ -64,7 +88,6 @@ class LocalizacionRepository:
 
     def actualizar_estado(self, loc: Localizacion, estado: str) -> Localizacion:
         loc.estado_reporte = estado
-        # Desactivar si el reporte ya no está en búsqueda — issue #27
         if estado in ("RESUELTO", "OCULTO", "ABANDONADO"):
             loc.activo = False
         self.db.commit()

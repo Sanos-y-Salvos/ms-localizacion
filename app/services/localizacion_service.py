@@ -96,3 +96,11 @@ def _coordenadas_validas(latitud: float, longitud: float) -> bool:
         and -90 <= latitud <= 90
         and -180 <= longitud <= 180
     )
+
+    def buscar_en_radio(
+        self,
+        latitud: float,
+        longitud: float,
+        radio_metros: float,
+    ) -> list:
+        return self.repo.buscar_en_radio(latitud, longitud, radio_metros)

@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config.database import verificar_conexion
 from app.config.settings import settings
 from app.routers.health import router as health_router
+from app.routers.mapa import router as mapa_router
 from app.services.mensajeria_service import mensajeria_service
 from app.services.evento_handler import handle_evento
 
@@ -17,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # ── Arranque ──────────────────────────────────────────────
     # 1. Base de datos — crítico
     verificar_conexion()
 
@@ -28,7 +28,6 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    # ── Cierre ────────────────────────────────────────────────
     await mensajeria_service.cerrar()
     logger.info("[ms-localizacion] Apagado limpio")
 
@@ -48,5 +47,4 @@ app.add_middleware(
 )
 
 app.include_router(health_router)
-
-# El router de /mapa se añade en la issue #28
+app.include_router(mapa_router)
