@@ -42,3 +42,35 @@ class LocalizacionRepository:
             .filter(Localizacion.reporte_id == reporte_id)
             .first()
         )
+
+    def actualizar_coordenadas(
+        self,
+        loc: Localizacion,
+        latitud: float,
+        longitud: float,
+        nombre_mascota: str | None = None,
+        descripcion_lugar: str | None = None,
+    ) -> Localizacion:
+        loc.latitud = latitud
+        loc.longitud = longitud
+        loc.ubicacion = ST_SetSRID(ST_MakePoint(longitud, latitud), 4326)
+        if nombre_mascota is not None:
+            loc.nombre_mascota = nombre_mascota
+        if descripcion_lugar is not None:
+            loc.descripcion_lugar = descripcion_lugar
+        self.db.commit()
+        self.db.refresh(loc)
+        return loc
+
+    def actualizar_estado(self, loc: Localizacion, estado: str) -> Localizacion:
+        loc.estado_reporte = estado
+        # Desactivar si el reporte ya no está en búsqueda — issue #27
+        if estado in ("RESUELTO", "OCULTO", "ABANDONADO"):
+            loc.activo = False
+        self.db.commit()
+        self.db.refresh(loc)
+        return loc
+
+    def eliminar(self, loc: Localizacion) -> None:
+        self.db.delete(loc)
+        self.db.commit()
