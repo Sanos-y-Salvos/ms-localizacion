@@ -3,7 +3,7 @@ import logging
 
 from aio_pika.abc import AbstractIncomingMessage
 
-from app.config.database import SessionLocal
+from app.config.database import get_session_local
 from app.services.localizacion_service import LocalizacionService
 from app.services.mensajeria_service import EVENTOS
 
@@ -40,7 +40,7 @@ async def _handle_reporte_creado(payload: dict) -> None:
         logger.error("[Evento] Payload sin reporteId — descartando: %s", payload)
         return
 
-    db = SessionLocal()
+    db = get_session_local()()
     try:
         service = LocalizacionService(db)
         service.registrar_desde_evento(
@@ -63,7 +63,7 @@ async def _handle_reporte_actualizado(payload: dict) -> None:
         logger.error("[Evento] Payload sin reporteId — descartando: %s", payload)
         return
 
-    db = SessionLocal()
+    db = get_session_local()()
     try:
         service = LocalizacionService(db)
         service.actualizar_desde_evento(
@@ -87,7 +87,7 @@ async def _handle_estado_cambiado(payload: dict) -> None:
         logger.error("[Evento] Payload inválido en ESTADO_CAMBIADO — descartando: %s", payload)
         return
 
-    db = SessionLocal()
+    db = get_session_local()()
     try:
         service = LocalizacionService(db)
         service.cambiar_estado_desde_evento(reporte_id=reporte_id, estado=estado)
@@ -103,7 +103,7 @@ async def _handle_reporte_eliminado(payload: dict) -> None:
         logger.error("[Evento] Payload sin reporteId — descartando: %s", payload)
         return
 
-    db = SessionLocal()
+    db = get_session_local()()
     try:
         service = LocalizacionService(db)
         service.eliminar_desde_evento(reporte_id=reporte_id)

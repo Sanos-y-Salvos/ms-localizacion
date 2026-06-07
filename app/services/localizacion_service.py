@@ -88,6 +88,8 @@ class LocalizacionService:
         longitud: float,
         radio_metros: float,
     ) -> list:
+        if radio_metros > 50_000:
+            raise ValueError("El radio maximo de busqueda es 50 km")
         return self.repo.buscar_en_radio(latitud, longitud, radio_metros)
 
 
