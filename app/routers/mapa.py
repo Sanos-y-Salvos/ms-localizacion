@@ -20,10 +20,10 @@ class PuntoMapa(BaseModel):
     latitud: float
     longitud: float
     direccion_aproximada: str | None
-    descripcion_lugar: str | None
+    descripcion: str | None
+    codigo_chip: str | None
     foto_url: str | None
 
-    # Convierte UUID a str automáticamente
     model_config = {"from_attributes": True, "arbitrary_types_allowed": True}
 
     @classmethod
@@ -36,7 +36,8 @@ class PuntoMapa(BaseModel):
             latitud=float(obj.latitud),
             longitud=float(obj.longitud),
             direccion_aproximada=obj.direccion_aproximada,
-            descripcion_lugar=obj.descripcion_lugar,
+            descripcion=obj.descripcion,
+            codigo_chip=obj.codigo_chip,
             foto_url=obj.foto_url,
         )
 

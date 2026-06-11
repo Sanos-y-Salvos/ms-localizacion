@@ -27,7 +27,8 @@ class Localizacion(Base):
     )
 
     direccion_aproximada: Mapped[str | None] = mapped_column(nullable=True)
-    descripcion_lugar: Mapped[str | None] = mapped_column(nullable=True)
+    descripcion: Mapped[str | None] = mapped_column(nullable=True)       # descripcion del reporte
+    codigo_chip: Mapped[str | None] = mapped_column(String(100), nullable=True)
     foto_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     activo: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)

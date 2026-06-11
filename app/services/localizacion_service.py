@@ -19,7 +19,8 @@ class LocalizacionService:
         latitud: float,
         longitud: float,
         nombre_mascota: str | None = None,
-        descripcion_lugar: str | None = None,
+        descripcion: str | None = None,
+        codigo_chip: str | None = None,
         foto_url: str | None = None,
     ) -> None:
         if not _coordenadas_validas(latitud, longitud):
@@ -37,7 +38,8 @@ class LocalizacionService:
             latitud=latitud,
             longitud=longitud,
             nombre_mascota=nombre_mascota,
-            descripcion_lugar=descripcion_lugar,
+            descripcion=descripcion,
+            codigo_chip=codigo_chip,
             foto_url=foto_url,
         )
         logger.info("[Evento] Localizacion registrada para reporte %s", reporte_id)
@@ -48,7 +50,7 @@ class LocalizacionService:
         latitud: float,
         longitud: float,
         nombre_mascota: str | None = None,
-        descripcion_lugar: str | None = None,
+        descripcion: str | None = None,
     ) -> None:
         if not _coordenadas_validas(latitud, longitud):
             logger.error("[Evento] Coordenadas invalidas en actualizacion de reporte %s. Descartando.", reporte_id)
@@ -59,7 +61,7 @@ class LocalizacionService:
             logger.warning("[Evento] Reporte %s no tiene localizacion registrada. Ignorando.", reporte_id)
             return
 
-        self.repo.actualizar_coordenadas(loc, latitud, longitud, nombre_mascota, descripcion_lugar)
+        self.repo.actualizar_coordenadas(loc, latitud, longitud, nombre_mascota, descripcion)
         logger.info("[Evento] Localizacion actualizada para reporte %s", reporte_id)
 
     def cambiar_estado_desde_evento(self, reporte_id: str, estado: str) -> None:

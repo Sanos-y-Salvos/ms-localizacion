@@ -23,13 +23,10 @@ async def handle_evento(message: AbstractIncomingMessage) -> None:
 
         if routing_key == EVENTOS["REPORTE_CREADO"]:
             await _handle_reporte_creado(payload)
-
         elif routing_key == EVENTOS["REPORTE_ACTUALIZADO"]:
             await _handle_reporte_actualizado(payload)
-
         elif routing_key == EVENTOS["REPORTE_ESTADO_CAMBIADO"]:
             await _handle_estado_cambiado(payload)
-
         elif routing_key == EVENTOS["REPORTE_ELIMINADO"]:
             await _handle_reporte_eliminado(payload)
 
@@ -49,7 +46,8 @@ async def _handle_reporte_creado(payload: dict) -> None:
             latitud=payload.get("ubicacionLatitud"),
             longitud=payload.get("ubicacionLongitud"),
             nombre_mascota=payload.get("nombreMascota"),
-            descripcion_lugar=payload.get("direccionReferencia"),
+            descripcion=payload.get("descripcion"),
+            codigo_chip=payload.get("codigoChip"),
             foto_url=payload.get("fotoUrl"),
         )
     except Exception:
@@ -72,7 +70,7 @@ async def _handle_reporte_actualizado(payload: dict) -> None:
             latitud=payload.get("ubicacionLatitud"),
             longitud=payload.get("ubicacionLongitud"),
             nombre_mascota=payload.get("nombreMascota"),
-            descripcion_lugar=payload.get("direccionReferencia"),
+            descripcion=payload.get("descripcion"),
         )
     except Exception:
         logger.exception("[Evento] Error procesando REPORTE_ACTUALIZADO para %s", reporte_id)

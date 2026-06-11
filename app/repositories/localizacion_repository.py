@@ -18,8 +18,9 @@ class LocalizacionRepository:
         latitud: float,
         longitud: float,
         nombre_mascota: str | None = None,
-        descripcion_lugar: str | None = None,
+        descripcion: str | None = None,
         direccion_aproximada: str | None = None,
+        codigo_chip: str | None = None,
         foto_url: str | None = None,
     ) -> Localizacion:
         loc = Localizacion(
@@ -30,8 +31,9 @@ class LocalizacionRepository:
             longitud=longitud,
             ubicacion=ST_SetSRID(ST_MakePoint(longitud, latitud), 4326),
             nombre_mascota=nombre_mascota,
-            descripcion_lugar=descripcion_lugar,
+            descripcion=descripcion,
             direccion_aproximada=direccion_aproximada,
+            codigo_chip=codigo_chip,
             foto_url=foto_url,
             activo=True,
         )
@@ -71,15 +73,15 @@ class LocalizacionRepository:
         latitud: float,
         longitud: float,
         nombre_mascota: str | None = None,
-        descripcion_lugar: str | None = None,
+        descripcion: str | None = None,
     ) -> Localizacion:
         loc.latitud = latitud
         loc.longitud = longitud
         loc.ubicacion = ST_SetSRID(ST_MakePoint(longitud, latitud), 4326)
         if nombre_mascota is not None:
             loc.nombre_mascota = nombre_mascota
-        if descripcion_lugar is not None:
-            loc.descripcion_lugar = descripcion_lugar
+        if descripcion is not None:
+            loc.descripcion = descripcion
         self.db.commit()
         self.db.refresh(loc)
         return loc
