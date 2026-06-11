@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -20,26 +21,41 @@ class PuntoMapa(BaseModel):
     longitud: float
     direccion_aproximada: str | None
     descripcion_lugar: str | None
+    foto_url: str | None
 
-    model_config = {"from_attributes": True}
+    # Convierte UUID a str automáticamente
+    model_config = {"from_attributes": True, "arbitrary_types_allowed": True}
+
+    @classmethod
+    def from_orm_safe(cls, obj: Localizacion) -> "PuntoMapa":
+        return cls(
+            id=str(obj.id),
+            reporte_id=str(obj.reporte_id),
+            tipo_reporte=obj.tipo_reporte,
+            nombre_mascota=obj.nombre_mascota,
+            latitud=float(obj.latitud),
+            longitud=float(obj.longitud),
+            direccion_aproximada=obj.direccion_aproximada,
+            descripcion_lugar=obj.descripcion_lugar,
+            foto_url=obj.foto_url,
+        )
 
 
 @router.get("/puntos", response_model=list[PuntoMapa])
 def obtener_puntos(
-    lat: float = Query(..., ge=-90, le=90, description="Latitud del centro"),
-    lng: float = Query(..., ge=-180, le=180, description="Longitud del centro"),
-    radio: float = Query(5000, gt=0, le=RADIO_MAXIMO_METROS, description="Radio en metros (máx 50 000)"),
+    lat: float = Query(..., ge=-90, le=90),
+    lng: float = Query(..., ge=-180, le=180),
+    radio: float = Query(5000, gt=0, le=RADIO_MAXIMO_METROS),
     db: Session = Depends(get_db),
 ):
-    """
-    Retorna hasta 300 reportes EN_BUSQUEDA dentro del radio dado.
-    Usa ST_DWithin de PostGIS con índice GIST.
-    """
+    """Retorna hasta 300 reportes EN_BUSQUEDA dentro del radio dado."""
     service = LocalizacionService(db)
-    return service.buscar_en_radio(latitud=lat, longitud=lng, radio_metros=radio)
+    puntos = service.buscar_en_radio(latitud=lat, longitud=lng, radio_metros=radio)
+    return [PuntoMapa.from_orm_safe(p) for p in puntos]
 
 
 @router.get("/puntos/todos", response_model=list[PuntoMapa])
 def obtener_todos_los_puntos(db: Session = Depends(get_db)):
     """Solo para testing — retorna todos los registros activos sin filtro de radio."""
-    return db.query(Localizacion).filter(Localizacion.activo == True).all()
+    puntos = db.query(Localizacion).filter(Localizacion.activo == True).all()
+    return [PuntoMapa.from_orm_safe(p) for p in puntos]

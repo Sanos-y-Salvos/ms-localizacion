@@ -16,7 +16,7 @@ async def handle_evento(message: AbstractIncomingMessage) -> None:
         try:
             payload = json.loads(message.body.decode())
         except json.JSONDecodeError:
-            logger.error("[RabbitMQ] Mensaje no es JSON válido — descartando")
+            logger.error("[RabbitMQ] Mensaje no es JSON valido — descartando")
             return
 
         logger.info("[RabbitMQ] Evento recibido: %s", routing_key)
@@ -50,6 +50,7 @@ async def _handle_reporte_creado(payload: dict) -> None:
             longitud=payload.get("ubicacionLongitud"),
             nombre_mascota=payload.get("nombreMascota"),
             descripcion_lugar=payload.get("direccionReferencia"),
+            foto_url=payload.get("fotoUrl"),
         )
     except Exception:
         logger.exception("[Evento] Error procesando REPORTE_CREADO para %s", reporte_id)
@@ -84,7 +85,7 @@ async def _handle_estado_cambiado(payload: dict) -> None:
     estado = payload.get("estado")
 
     if not reporte_id or not estado:
-        logger.error("[Evento] Payload inválido en ESTADO_CAMBIADO — descartando: %s", payload)
+        logger.error("[Evento] Payload invalido en ESTADO_CAMBIADO — descartando: %s", payload)
         return
 
     db = get_session_local()()
