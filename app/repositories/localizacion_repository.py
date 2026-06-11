@@ -20,6 +20,7 @@ class LocalizacionRepository:
         nombre_mascota: str | None = None,
         descripcion_lugar: str | None = None,
         direccion_aproximada: str | None = None,
+        foto_url: str | None = None,
     ) -> Localizacion:
         loc = Localizacion(
             reporte_id=reporte_id,
@@ -31,6 +32,7 @@ class LocalizacionRepository:
             nombre_mascota=nombre_mascota,
             descripcion_lugar=descripcion_lugar,
             direccion_aproximada=direccion_aproximada,
+            foto_url=foto_url,
             activo=True,
         )
         self.db.add(loc)
@@ -51,10 +53,6 @@ class LocalizacionRepository:
         longitud: float,
         radio_metros: float,
     ) -> list[Localizacion]:
-        """
-        Retorna hasta 300 puntos EN_BUSQUEDA dentro del radio dado.
-        Usa ST_DWithin de PostGIS con índice GIST — criterio issue #28.
-        """
         punto = ST_SetSRID(ST_MakePoint(longitud, latitud), 4326)
         return (
             self.db.query(Localizacion)

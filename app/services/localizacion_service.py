@@ -20,6 +20,7 @@ class LocalizacionService:
         longitud: float,
         nombre_mascota: str | None = None,
         descripcion_lugar: str | None = None,
+        foto_url: str | None = None,
     ) -> None:
         if not _coordenadas_validas(latitud, longitud):
             logger.error("[Evento] Coordenadas invalidas para reporte %s. Descartando.", reporte_id)
@@ -37,6 +38,7 @@ class LocalizacionService:
             longitud=longitud,
             nombre_mascota=nombre_mascota,
             descripcion_lugar=descripcion_lugar,
+            foto_url=foto_url,
         )
         logger.info("[Evento] Localizacion registrada para reporte %s", reporte_id)
 
