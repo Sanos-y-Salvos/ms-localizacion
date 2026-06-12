@@ -90,6 +90,8 @@ class LocalizacionRepository:
         loc.estado_reporte = estado
         if estado in ("RESUELTO", "OCULTO", "ABANDONADO"):
             loc.activo = False
+        if estado == "EN_BUSQUEDA":
+            loc.activo = True
         self.db.commit()
         self.db.refresh(loc)
         return loc
