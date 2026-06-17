@@ -19,7 +19,8 @@ services:
       postgres-localizacion:
         condition: service_healthy
     networks:
-      - sanos-y-salvos-net
+      - db-localizacion-net # Red privada para su BD
+      - sanos-y-salvos-net  # Red pública
 
   postgres-localizacion:
     image: postgis/postgis:16-3.4-alpine
@@ -41,7 +42,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - sanos-y-salvos-net
+      - db-localizacion-net # Solo conectada a la red privada
 
 volumes:
   pg_localizacion_data:
@@ -50,3 +51,6 @@ networks:
   sanos-y-salvos-net:
     external: true
     name: mascotas_sanos-y-salvos-net
+  db-localizacion-net:
+    driver: bridge 
+    name: db-localizacion-net # Red local exclusiva para este microservicio
