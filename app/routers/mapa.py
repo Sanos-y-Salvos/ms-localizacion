@@ -1,4 +1,3 @@
-from uuid import UUID
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -17,6 +16,7 @@ class PuntoMapa(BaseModel):
     reporte_id: str
     tipo_reporte: str
     nombre_mascota: str | None
+    especie: str | None
     latitud: float
     longitud: float
     direccion_aproximada: str | None
@@ -33,6 +33,7 @@ class PuntoMapa(BaseModel):
             reporte_id=str(obj.reporte_id),
             tipo_reporte=obj.tipo_reporte,
             nombre_mascota=obj.nombre_mascota,
+            especie=obj.especie,
             latitud=float(obj.latitud),
             longitud=float(obj.longitud),
             direccion_aproximada=obj.direccion_aproximada,

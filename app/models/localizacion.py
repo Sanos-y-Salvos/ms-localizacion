@@ -18,6 +18,7 @@ class Localizacion(Base):
     tipo_reporte: Mapped[str] = mapped_column(String(20), nullable=False)
     estado_reporte: Mapped[str] = mapped_column(String(20), nullable=False, default="EN_BUSQUEDA")
     nombre_mascota: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    especie: Mapped[str | None] = mapped_column(String(50), nullable=True)
 
     latitud: Mapped[float] = mapped_column(nullable=False)
     longitud: Mapped[float] = mapped_column(nullable=False)
@@ -27,7 +28,7 @@ class Localizacion(Base):
     )
 
     direccion_aproximada: Mapped[str | None] = mapped_column(nullable=True)
-    descripcion: Mapped[str | None] = mapped_column(nullable=True)       # descripcion del reporte
+    descripcion: Mapped[str | None] = mapped_column(nullable=True)
     codigo_chip: Mapped[str | None] = mapped_column(String(100), nullable=True)
     foto_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 

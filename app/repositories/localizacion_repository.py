@@ -18,6 +18,7 @@ class LocalizacionRepository:
         latitud: float,
         longitud: float,
         nombre_mascota: str | None = None,
+        especie: str | None = None,
         descripcion: str | None = None,
         direccion_aproximada: str | None = None,
         codigo_chip: str | None = None,
@@ -31,6 +32,7 @@ class LocalizacionRepository:
             longitud=longitud,
             ubicacion=ST_SetSRID(ST_MakePoint(longitud, latitud), 4326),
             nombre_mascota=nombre_mascota,
+            especie=especie,
             descripcion=descripcion,
             direccion_aproximada=direccion_aproximada,
             codigo_chip=codigo_chip,
@@ -90,7 +92,7 @@ class LocalizacionRepository:
         loc.estado_reporte = estado
         if estado in ("RESUELTO", "OCULTO", "ABANDONADO"):
             loc.activo = False
-        if estado == "EN_BUSQUEDA":
+        elif estado == "EN_BUSQUEDA":
             loc.activo = True
         self.db.commit()
         self.db.refresh(loc)

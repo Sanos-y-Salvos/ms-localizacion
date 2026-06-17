@@ -46,6 +46,7 @@ async def _handle_reporte_creado(payload: dict) -> None:
             latitud=payload.get("ubicacionLatitud"),
             longitud=payload.get("ubicacionLongitud"),
             nombre_mascota=payload.get("nombreMascota"),
+            especie=payload.get("especie"),
             descripcion=payload.get("descripcion"),
             codigo_chip=payload.get("codigoChip"),
             foto_url=payload.get("fotoUrl"),
