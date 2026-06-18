@@ -34,8 +34,9 @@ services:
       - '5434:5432'
     volumes:
       - pg_localizacion_data:/var/lib/postgresql/data
-      - ./migrations/001_create_localizaciones.sql:/docker-entrypoint-initdb.d/001_init.sql
-      - ./migrations/002_add_foto_url.sql:/docker-entrypoint-initdb.d/002_foto_url.sql
+      # Nota: el esquema lo crea Alembic al arrancar ms-localizacion (ver alembic/env.py).
+      # No montar también estos SQL como scripts de init de Postgres — crean la misma
+      # tabla dos veces y Alembic falla con "relation already exists" en cada arranque.
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
