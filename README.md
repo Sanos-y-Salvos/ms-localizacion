@@ -54,6 +54,8 @@ docker compose up --build -d
 
 El servicio queda disponible en `http://localhost:3004`.
 
+> **Nota sobre puertos:** el `.env.example` configura `PORT=8000` (interno Docker). Al ejecutar **localmente sin Docker**, inicia el servicio en el puerto `3004` para que el BFF lo encuentre (`uvicorn app.main:app --reload --port 3004`).
+
 Documentación interactiva: `http://localhost:3004/docs`
 
 ## Pruebas unitarias
