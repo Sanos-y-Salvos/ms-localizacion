@@ -68,6 +68,7 @@ Python 3.12 o superior. Instalar dependencias de testing:
 
 ```bash
 pip install fastapi sqlalchemy geoalchemy2 pydantic-settings pytest httpx aio-pika
+pip install pytest pytest-cov
 ```
 
 > **Nota:** No instalar `psycopg2-binary` para correr las pruebas — no es necesario y puede fallar en algunos entornos sin PostgreSQL instalado localmente.
@@ -76,6 +77,7 @@ pip install fastapi sqlalchemy geoalchemy2 pydantic-settings pytest httpx aio-pi
 
 ```bash
 python -m pytest tests/ -v
+python -m pytest --cov=app --cov-report=html
 ```
 
 Resultado esperado: **23 pruebas, 0 fallos**
