@@ -1,7 +1,7 @@
 services:
   ms-localizacion:
-    #image: lucianobc/ms-localizacion:latest
-    build: .
+    image: lucianobc/ms-localizacion:latest
+    # build: .
     container_name: ms-localizacion
     restart: unless-stopped
     ports:
